@@ -1,0 +1,30 @@
+[package]
+name = "lazy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libc = "0.2.144"
+nix = "0.26.2"
+
+[profile.dev]
+# panic = "abort"
+
+# via https://github.com/johnthagen/min-sized-rust
+[profile.release]
+opt-level = "s" # (almost) no loops, so "z" doesn't matter
+# strip = "symbols"  # huge difference (1.8M -> 279K)
+# strip = "debuginfo"
+lto = "fat" # ~reasonable difference (327K->279K), mostly when `strip` is off though (4.1M->1.8M)
+
+split-debuginfo = "packed"
+strip = "debuginfo"
+
+# doesn't change things much
+codegen-units = 1
+
+panic = "abort" # this is close to what we want, but still emits unwinding code for RUST_BACKTRACE=1
+# panic_immediat_abort is too soon, we won't get any error messages: https://github.com/rust-lang/rust/blob/0939ec13d88dfafcbb7f25314bd0d2f1519bf0d5/library/std/src/panicking.rs#L620
+
+# this could be interesting? but: `warning: unused manifest key: profile.release.force-unwind-tables`
+# force-unwind-tables = "off"

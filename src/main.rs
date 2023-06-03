@@ -61,7 +61,7 @@ fn main() -> ! {
                                 }
                             }
                             Err(errno) => {
-                                eprintln!("{name}: could not lseek: {errno}");
+                                eprintln!("{name}: could not read: {errno}");
                             }
                         }
                     }
